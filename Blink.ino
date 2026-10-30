@@ -22,7 +22,7 @@
   https://docs.arduino.cc/built-in-examples/basics/Blink/
 */
 #if !defined(USER_LED_PIN)
-#define USER_LED_PIN 12
+#define USER_LED_PIN 10
 #endif
 
 // the setup function runs once when you press reset or power the board
