@@ -42,4 +42,10 @@ jobs:
           arduino-cli compile \
             --fqbn esp32:esp32:esp32s3:CDCOnBoot=cdc,USBMode=hwcdc \
             --build-property compiler.cpp.extra_flags="-DDEVICE_NUMBER=1 -DKOLIBRI_FIRMWARE_VERSION=0 -D${{ matrix.revision }}" \
-            Blink.ino
+            -v -e Blink.ino
+
+      - name: Upload Artifacts of Blink.ino (${{ matrix.revision }})
+        uses: actions/upload-artifact@v7
+        with:
+          name: blink-artifact
+          path: build
