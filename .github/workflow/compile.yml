@@ -1,0 +1,45 @@
+name: Compile Blink LED (All Hardware Revisions)
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        revision:
+          - USER_LED_PIN=3
+          - USER_LED_PIN=23
+          - USER_LED_PIN=16
+
+    steps:
+      - name: Checkout repository (with submodules)
+        uses: actions/checkout@v4
+
+      - name: Install Arduino CLI
+        uses: arduino/setup-arduino-cli@v1
+
+      - name: Configure Arduino CLI for ESP32
+        run: |
+          arduino-cli config init
+          arduino-cli config set board_manager.additional_urls \
+            https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+
+      - name: Update core index
+        run: arduino-cli core update-index
+
+      - name: Install ESP32 core
+        run: arduino-cli core install esp32:esp32
+
+      - name: Compile Blink.ino (${{ matrix.revision }})
+        run: |
+          echo "Building with -D${{ matrix.revision }}"
+          arduino-cli compile \
+            --fqbn esp32:esp32:esp32s3:CDCOnBoot=cdc,USBMode=hwcdc \
+            --build-property compiler.cpp.extra_flags="-DDEVICE_NUMBER=1 -DKOLIBRI_FIRMWARE_VERSION=0 -D${{ matrix.revision }}" \
+            Blink.ino

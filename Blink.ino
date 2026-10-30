@@ -21,10 +21,16 @@
 
   https://docs.arduino.cc/built-in-examples/basics/Blink/
 */
+#if !defined(USER_LED_PIN)
 #define USER_LED_PIN 12
+#endif
 
 // the setup function runs once when you press reset or power the board
 void setup() {
+  Serial.begin(115200);
+  delay(5000);
+
+  Serial.printf("USER_LED_PIN: %d\n", USER_LED_PIN);
   // initialize digital pin USER_LED_PIN as an output.
   pinMode(USER_LED_PIN, OUTPUT);
 }
